@@ -1,0 +1,19 @@
+  model:
+    type: RandomForestClassifier
+    params:
+      n_estimators: 100
+      max_depth: 10
+      min_samples_split: 2
+      min_samples_leaf: 1
+      random_state: 42
+
+  training:
+    test_size: 0.2
+    random_state: 42
+    cv_folds: 5
+
+  paths:
+    data_dir: data/processed/
+    model_dir: models/
+    metrics_dir: results/
+    logs_dir: logs/

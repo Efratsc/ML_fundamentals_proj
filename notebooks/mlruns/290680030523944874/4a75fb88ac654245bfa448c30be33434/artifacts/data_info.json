@@ -1,0 +1,14 @@
+{
+  "train_samples": 277,
+  "test_samples": 70,
+  "n_features": 5,
+  "n_classes": 2,
+  "class_distribution_train": {
+    "no": 208,
+    "yes": 69
+  },
+  "class_distribution_test": {
+    "no": 53,
+    "yes": 17
+  }
+}

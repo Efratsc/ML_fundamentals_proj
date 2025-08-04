@@ -1,0 +1,11 @@
+# Minimal ML Requirements
+numpy
+scikit-learn
+matplotlib
+seaborn
+python-dotenv
+pyyaml
+pytest
+joblib
+fastapi
+uvicorn[standard]
