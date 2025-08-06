@@ -307,8 +307,8 @@ docker-compose.yml
 .docker/
 
 # Kubernetes
-*.yaml
-*.yml
+#*.yaml
+#*.yml
 !config/*.yaml
 !config/*.yml
 
