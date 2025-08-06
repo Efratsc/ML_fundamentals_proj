@@ -3,7 +3,7 @@ name: MLOps CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   lint:
