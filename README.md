@@ -59,7 +59,9 @@ The preprocessing pipeline includes the following steps:
 6. **Train/Test Split**: Split data into training and testing sets using train_test_split()
 
 ### Usage
-![CI/CD Pipeline](https://github.com/Efratsc/ML_fundamentals_proj/actions/workflows/deploy.yml/badge.svg)
+![MLOps CI/CD Pipeline](https://github.com/Efratsc/ML_fundamentals_proj/workflows/MLOps%20CI/CD%20Pipeline/badge.svg)
+
+)
 
 ```python
 from src.preprocess import DataPreprocessor
