@@ -20,8 +20,8 @@ def main():
     print(f"Raw data shape: {df.shape}")
     print(f"Columns: {df.columns.tolist()}")
     
-    # Define target column - note the space at the end!
-    target_column = 'Violence '  # This has a space at the end
+    # Define target column 
+    target_column = 'Violence '  
     
     # Define columns to drop (if any)
     columns_to_drop = ['SL. No']  # Drop the serial number column
