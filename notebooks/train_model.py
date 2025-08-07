@@ -6,7 +6,7 @@ from train import ModelTrainer
 
 
 # Add src to the path
-base_dir = os.path.dirname(os.path.abspath(__file__))  # /full/path/to/ml_project
+base_dir = os.path.dirname(os.path.abspath(__file__)) 
 
 os.makedirs(os.path.join(base_dir, "logs"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "results"), exist_ok=True)
@@ -42,7 +42,7 @@ def main():
     mlflow.set_experiment("domestic_violence_prediction")
 
     # Run the training pipeline with MLflow tracking
-    _ = trainer.train_pipeline_with_mlflow()  # assigned to _ to avoid unused variable warning
+    _ = trainer.train_pipeline_with_mlflow() 
 
     # Print summary
     print("\nTraining completed!")

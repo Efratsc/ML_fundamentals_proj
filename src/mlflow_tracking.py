@@ -34,7 +34,7 @@ class MLflowTracker:
         """Start a new MLflow run, ending any active run first."""
         if mlflow.active_run() is not None:
             logger.warning(
-                "An MLflow run is already active. Ending it before starting a new run."
+                "An MLflow run is already active. "
             )
             mlflow.end_run()
         if run_name is None:
@@ -50,7 +50,7 @@ class MLflowTracker:
     def log_metrics(self, metrics):
         """Log metrics to MLflow, filtering out None values."""
         filtered_metrics = {k: v for k, v in metrics.items() if v is not None}
-        print("Filtered metrics for MLflow:", filtered_metrics)  # Optional debug print
+        print("Filtered metrics for MLflow:", filtered_metrics) 
         mlflow.log_metrics(filtered_metrics)
         logger.info(f"Logged metrics: {filtered_metrics}")
 
@@ -117,7 +117,9 @@ class MLflowTracker:
             logger.info("Ended MLflow run")
 
     def register_model(
-        self, model_name: str = "domestic_violence_model", version: str = "v1.0"
+        self,
+        model_name: str = "domestic_violence_model",
+        version: str = "v1.0",
     ):
         """Register the model in the MLflow Model Registry."""
         try:
@@ -133,7 +135,9 @@ class MLflowTracker:
 
     def get_experiment_info(self):
         """Return basic experiment info including total runs."""
-        experiment = mlflow.get_experiment_by_name(self.experiment_name)
+        experiment = mlflow.get_experiment_by_name(
+            self.experiment_name
+        )
         if experiment:
             runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
             return {

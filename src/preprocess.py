@@ -31,7 +31,10 @@ class DataPreprocessor:
     """
 
     def __init__(
-        self, target_column: str, test_size: float = 0.2, random_state: int = 42
+        self,
+        target_column: str,
+        test_size: float = 0.2,
+        random_state: int = 42,
     ):
         """
         Initialize the preprocessor.
@@ -152,7 +155,9 @@ class DataPreprocessor:
         df_normalized = df.copy()
 
         if len(columns) > 0:
-            df_normalized[columns] = self.scaler.fit_transform(df_normalized[columns])
+            df_normalized[columns] = self.scaler.fit_transform(
+                df_normalized[columns]
+            )
             logger.info(f"Normalized {len(columns)} numerical features")
 
         return df_normalized
@@ -173,7 +178,9 @@ class DataPreprocessor:
         logger.info(f"Dropping {len(columns_to_drop)} irrelevant columns")
 
         # Only drop columns that exist in the DataFrame
-        existing_columns = [col for col in columns_to_drop if col in df.columns]
+        existing_columns = [
+            col for col in columns_to_drop if col in df.columns
+        ]
         df_cleaned = df.drop(columns=existing_columns)
 
         self.columns_to_drop = existing_columns
@@ -232,7 +239,8 @@ class DataPreprocessor:
         )
 
         logger.info(
-            f"Training set shape: {X_train.shape}, Testing set shape: {X_test.shape}"
+            f"Training set shape: {X_train.shape}, "
+            f"Testing set shape: {X_test.shape}"
         )
         return X_train, X_test, y_train, y_test
 
@@ -272,7 +280,7 @@ class DataPreprocessor:
             os.path.join(artifacts_dir, "label_encoders.pkl"),
         )
 
-        logger.info("Split datasets and preprocessing artifacts saved successfully")
+        logger.info("Split datasets saved successfully")
 
     def preprocess_pipeline(
         self, df: pd.DataFrame, columns_to_drop: Optional[List[str]] = None

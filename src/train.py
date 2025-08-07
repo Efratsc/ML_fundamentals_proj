@@ -30,7 +30,8 @@ logger = logging.getLogger(__name__)
 
 class ModelTrainer:
     """
-    A comprehensive model training pipeline for ML projects with MLflow tracking.
+    A comprehensive model training pipeline
+    for ML projects with MLflow tracking.
     """
 
     def __init__(self, config_path: str = "config/train_config.yaml"):
@@ -281,7 +282,9 @@ class ModelTrainer:
 
             self.create_model()
 
-            self.mlflow_tracker.log_hyperparameters(self.config["model"]["params"])
+            self.mlflow_tracker.log_hyperparameters(
+                self.config["model"]["params"]
+            )
 
             _ = self.cross_validate(X_train, y_train)
 
@@ -323,7 +326,8 @@ class ModelTrainer:
             self.mlflow_tracker.end_run()
 
     def train_pipeline(self) -> dict:
-        """Complete training pipeline (without MLflow for backward compatibility)."""
+        """Complete training pipeline
+         (without MLflow for backward compatibility)."""
         logger.info("Starting complete training pipeline")
 
         X_train, X_test, y_train, y_test = self.load_data()
@@ -393,3 +397,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
