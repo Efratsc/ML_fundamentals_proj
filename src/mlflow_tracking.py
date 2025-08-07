@@ -50,7 +50,7 @@ class MLflowTracker:
     def log_metrics(self, metrics):
         """Log metrics to MLflow, filtering out None values."""
         filtered_metrics = {k: v for k, v in metrics.items() if v is not None}
-        print("Filtered metrics for MLflow:", filtered_metrics) 
+        print("Filtered metrics for MLflow:", filtered_metrics)
         mlflow.log_metrics(filtered_metrics)
         logger.info(f"Logged metrics: {filtered_metrics}")
 
@@ -139,7 +139,9 @@ class MLflowTracker:
             self.experiment_name
         )
         if experiment:
-            runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+            runs = mlflow.search_runs(
+                experimenmt_ids=[experiment.experiment_id]
+            )
             return {
                 "experiment_name": self.experiment_name,
                 "experiment_id": experiment.experiment_id,
