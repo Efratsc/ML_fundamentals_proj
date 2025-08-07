@@ -10,13 +10,17 @@ app = FastAPI()
 model_api = MultiModelAPI(model_dir="models")
 
 # Define input data schema
+
+
 class PredictionRequest(BaseModel):
     model_name: str
     features: List[float]
 
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Multi-Model ML API"}
+
 
 @app.post("/predict")
 def predict(request: PredictionRequest):

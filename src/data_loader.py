@@ -1,7 +1,8 @@
 import os
 import pandas as pd
 
-RAW_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'raw')
+RAW_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "raw")
+
 
 def load_raw_data(filename):
     """

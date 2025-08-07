@@ -2,6 +2,7 @@ import joblib
 import os
 from fastapi import HTTPException
 
+
 class MultiModelAPI:
     def __init__(self, model_dir="models"):
         self.model_dir = model_dir
@@ -24,7 +25,9 @@ class MultiModelAPI:
         """
         model = self.models.get(model_name)
         if not model:
-            raise HTTPException(status_code=404, detail=f"Model '{model_name}' not found")
+            raise HTTPException(
+                status_code=404, detail=f"Model '{model_name}' not found"
+            )
 
         prediction = model.predict([features])
         return prediction[0]
