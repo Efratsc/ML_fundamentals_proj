@@ -8,7 +8,6 @@ import os
 import logging
 from typing import Tuple, List, Optional
 
-# Set up logging
 # Set up logging with absolute path
 log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
 os.makedirs(log_dir, exist_ok=True)
@@ -54,7 +53,8 @@ class DataPreprocessor:
 
         Args:
             df: Input DataFrame
-            strategy: Strategy for imputation ('mean', 'median', 'most_frequent', 'constant')
+            strategy: Strategy for imputation ('mean', 'median',
+                      'most_frequent', 'constant')
 
         Returns:
             DataFrame with missing values handled
@@ -71,8 +71,8 @@ class DataPreprocessor:
                 imputer = SimpleImputer(strategy=strategy)
                 df[numerical_cols] = imputer.fit_transform(df[numerical_cols])
                 logger.info(
-                    f"Imputed {
-                        len(numerical_cols)} numerical columns using {strategy}"
+                    f"Imputed {len(numerical_cols)} numerical columns "
+                    f"using {strategy} strategy"
                 )
 
         # Handle categorical columns
@@ -84,10 +84,8 @@ class DataPreprocessor:
                     )
                     logger.info(f"Imputed missing values in categorical column: {col}")
 
-        logger.info(
-            f"Missing values handled. Remaining nulls: {
-                df.isnull().sum().sum()}"
-        )
+        null_count = df.isnull().sum().sum()
+        logger.info(f"Missing values handled. Remaining nulls: {null_count}")
         return df
 
     def encode_categorical_features(
@@ -98,7 +96,8 @@ class DataPreprocessor:
 
         Args:
             df: Input DataFrame
-            columns: List of categorical columns to encode. If None, encodes all object columns.
+            columns: List of categorical columns to encode. If None,
+                     encodes all object columns.
 
         Returns:
             DataFrame with encoded categorical features
@@ -128,7 +127,8 @@ class DataPreprocessor:
 
         Args:
             df: Input DataFrame
-            columns: List of numerical columns to normalize. If None, normalizes all numerical columns.
+            columns: List of numerical columns to normalize. If None,
+                     normalizes all numerical columns.
 
         Returns:
             DataFrame with normalized numerical features
@@ -188,10 +188,11 @@ class DataPreprocessor:
         logger.info("Creating features and labels split")
 
         if self.target_column not in df.columns:
-            raise ValueError(
-                f"Target column '{
-                    self.target_column}' not found in DataFrame"
+            msg = (
+                f"Target column '{self.target_column}' "
+                "not found in DataFrame"
             )
+            raise ValueError(msg)
 
         X = df.drop(columns=[self.target_column])
         y = df[self.target_column]
@@ -219,9 +220,8 @@ class DataPreprocessor:
         )
 
         logger.info(
-            f"Training set: {
-                X_train.shape}, Testing set: {
-                X_test.shape}"
+            f"Training set shape: {X_train.shape}, "
+            f"Testing set shape: {X_test.shape}"
         )
         return X_train, X_test, y_train, y_test
 

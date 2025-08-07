@@ -1,7 +1,11 @@
 import os
+
 import pandas as pd
 
-RAW_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "raw")
+
+RAW_DATA_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "data", "raw"
+)
 
 
 def load_raw_data(filename):
@@ -21,6 +25,7 @@ def load_raw_data(filename):
     file_path = os.path.join(RAW_DATA_DIR, filename)
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
+
     try:
         df = pd.read_csv(file_path)
         return df

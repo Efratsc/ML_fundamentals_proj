@@ -1,18 +1,24 @@
-from train import ModelTrainer
 import sys
 import os
+
 import mlflow
+from train import ModelTrainer
+
 
 # Add src to the path
 base_dir = os.path.dirname(os.path.abspath(__file__))  # /full/path/to/ml_project
+
 
 os.makedirs(os.path.join(base_dir, "logs"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "results"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "models"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "mlruns"), exist_ok=True)
 
+
 # Add the src folder to Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
 
 
 def main():

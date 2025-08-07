@@ -1,20 +1,13 @@
 import argparse
 import json
 import os
-import sys
 import time
 import yaml
 import joblib
 import pandas as pd
-import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
-    classification_report,
-    confusion_matrix,
-)
-from sklearn.model_selection import cross_val_score, GridSearchCV
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
@@ -57,11 +50,9 @@ class ModelTrainer:
             with open(self.config_path, "r") as file:
                 config = yaml.safe_load(file)
 
-            # Check if config is None or empty
             if config is None:
                 logger.warning(
-                    f"Config file {
-                        self.config_path} is empty, using defaults"
+                    f"Config file {self.config_path} is empty, using defaults"
                 )
                 return self.get_default_config()
 
@@ -70,8 +61,7 @@ class ModelTrainer:
 
         except FileNotFoundError:
             logger.warning(
-                f"Config file {
-                    self.config_path} not found, using defaults"
+                f"Config file {self.config_path} not found, using defaults"
             )
             return self.get_default_config()
         except yaml.YAMLError as e:
@@ -131,34 +121,35 @@ class ModelTrainer:
         self.model.fit(X_train, y_train)
         self.training_time = time.time() - start_time
 
-        logger.info(
-            f"Model training completed in {
-                self.training_time:.2f} seconds"
-        )
+        logger.info(f"Model training completed in {self.training_time:.2f} seconds")
 
-    def evaluate_model(self, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
+    def evaluate_model(
+        self,
+        X_test: pd.DataFrame,
+        y_test: pd.Series,
+        X_train: pd.DataFrame = None,
+    ) -> dict:
         """Evaluate the model and calculate metrics."""
         logger.info("Evaluating model performance")
 
-        # Make predictions
         y_pred = self.model.predict(X_test)
 
-        # Calculate metrics
         accuracy = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred, average="weighted")
 
-        # Store metrics
+        train_size = len(X_train) if X_train is not None else None
+
         self.metrics = {
             "accuracy": accuracy,
             "f1_score": f1,
             "training_time": self.training_time,
             "test_size": len(X_test),
-            "train_size": len(X_train) if "X_train" in locals() else None,
+            "train_size": train_size,
         }
 
         logger.info(f"Model accuracy: {accuracy:.4f}")
         logger.info(f"Model F1-score: {f1:.4f}")
-        train_size = len(X_train) if "X_train" in locals() else None
+
         if train_size is not None:
             self.mlflow_tracker.log_metric("train_size", train_size)
 
@@ -169,7 +160,9 @@ class ModelTrainer:
 
         return self.metrics
 
-    def cross_validate(self, X_train: pd.DataFrame, y_train: pd.Series) -> dict:
+    def cross_validate(
+        self, X_train: pd.DataFrame, y_train: pd.Series
+    ) -> dict:
         """Perform cross-validation."""
         logger.info("Performing cross-validation")
 
@@ -185,10 +178,10 @@ class ModelTrainer:
         }
 
         logger.info(
-            f"Cross-validation accuracy: {cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})"
+            f"Cross-validation accuracy: {cv_scores.mean():.4f} "
+            f"(+/- {cv_scores.std() * 2:.4f})"
         )
 
-        # Add CV metrics to main metrics
         self.metrics.update(cv_metrics)
 
         return cv_metrics
@@ -238,7 +231,6 @@ class ModelTrainer:
             os.makedirs(metrics_dir, exist_ok=True)
             metrics_path = os.path.join(metrics_dir, "metrics.json")
 
-        # Add timestamp
         self.metrics["timestamp"] = datetime.now().isoformat()
 
         with open(metrics_path, "w") as f:
@@ -250,38 +242,27 @@ class ModelTrainer:
         """Complete training pipeline with MLflow tracking."""
         logger.info("Starting complete training pipeline with MLflow tracking")
 
-        # Start MLflow run
         self.mlflow_tracker.start_run()
 
         try:
-            # Load data
             X_train, X_test, y_train, y_test = self.load_data()
 
-            # Log data information
             self.mlflow_tracker.log_data_info(X_train, X_test, y_train, y_test)
 
-            # Create model
             self.create_model()
 
-            # Log hyperparameters
             self.mlflow_tracker.log_hyperparameters(self.config["model"]["params"])
 
-            # Perform cross-validation
-            cv_metrics = self.cross_validate(X_train, y_train)
+            _ = self.cross_validate(X_train, y_train)
 
-            # Train model
             self.train_model(X_train, y_train)
 
-            # Evaluate model
-            self.evaluate_model(X_test, y_test)
+            self.evaluate_model(X_test, y_test, X_train=X_train)
 
-            # Log metrics
             self.mlflow_tracker.log_metrics(self.metrics)
 
-            # Log model
             self.mlflow_tracker.log_model(self.model)
 
-            # Create and log confusion matrix
             confusion_matrix_path = os.path.join(
                 self.config["paths"]["metrics_dir"], "confusion_matrix.png"
             )
@@ -289,7 +270,6 @@ class ModelTrainer:
                 y_test, self.model.predict(X_test), confusion_matrix_path
             )
 
-            # Create and log feature importance
             feature_importance_path = os.path.join(
                 self.config["paths"]["metrics_dir"], "feature_importance.png"
             )
@@ -297,10 +277,8 @@ class ModelTrainer:
                 self.model, X_train.columns, feature_importance_path
             )
 
-            # Register model
             self.mlflow_tracker.register_model()
 
-            # Save model and metrics locally
             self.save_model()
             self.save_metrics()
 
@@ -308,35 +286,27 @@ class ModelTrainer:
             return self.metrics
 
         finally:
-            # End MLflow run
             self.mlflow_tracker.end_run()
 
     def train_pipeline(self) -> dict:
         """Complete training pipeline (without MLflow for backward compatibility)."""
         logger.info("Starting complete training pipeline")
 
-        # Load data
         X_train, X_test, y_train, y_test = self.load_data()
 
-        # Create model
         self.create_model()
 
-        # Perform cross-validation
-        self.cross_validate(X_train, y_train)
+        _ = self.cross_validate(X_train, y_train)
 
-        # Train model
         self.train_model(X_train, y_train)
 
-        # Evaluate model
-        self.evaluate_model(X_test, y_test)
+        self.evaluate_model(X_test, y_test, X_train=X_train)
 
-        # Plot confusion matrix
         confusion_matrix_path = os.path.join(
             self.config["paths"]["metrics_dir"], "confusion_matrix.png"
         )
         self.plot_confusion_matrix(X_test, y_test, confusion_matrix_path)
 
-        # Save model and metrics
         self.save_model()
         self.save_metrics()
 
@@ -359,11 +329,12 @@ def main():
     parser.add_argument(
         "--metrics-path", type=str, default=None, help="Path to save training metrics"
     )
-    parser.add_argument("--use-mlflow", action="store_true", help="Use MLflow tracking")
+    parser.add_argument(
+        "--use-mlflow", action="store_true", help="Use MLflow tracking"
+    )
 
     args = parser.parse_args()
 
-    # Create trainer and run pipeline
     trainer = ModelTrainer(config_path=args.config)
 
     if args.use_mlflow:

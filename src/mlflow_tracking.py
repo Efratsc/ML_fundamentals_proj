@@ -32,7 +32,8 @@ class MLflowTracker:
     def start_run(self, run_name: str = None):
         if mlflow.active_run() is not None:
             logger.warning(
-                "An MLflow run is already active. Ending it before starting a new run."
+                "An MLflow run is already active. Ending it before "
+                "starting a new run."
             )
             mlflow.end_run()
         if run_name is None:
@@ -78,7 +79,9 @@ class MLflowTracker:
             ).sort_values("importance", ascending=False)
             plt.figure(figsize=(10, 6))
             sns.barplot(
-                data=feature_importance_df.head(10), x="importance", y="feature"
+                data=feature_importance_df.head(10),
+                x="importance",
+                y="feature",
             )
             plt.title("Top 10 Feature Importances")
             plt.xlabel("Importance")
@@ -110,7 +113,9 @@ class MLflowTracker:
         try:
             if self.run is None:
                 raise RuntimeError("No active run to register model from")
-            model_uri = f"runs:/{self.run.info.run_id}/random_forest_model"
+            model_uri = (
+                f"runs:/{self.run.info.run_id}/random_forest_model"
+            )
             mlflow.register_model(model_uri, model_name)
             logger.info(f"Registered model: {model_name}")
         except Exception as e:
