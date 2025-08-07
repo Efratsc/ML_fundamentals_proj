@@ -20,7 +20,10 @@ from mlflow_tracking import MLflowTracker
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("logs/training.log"), logging.StreamHandler()],
+    handlers=[
+        logging.FileHandler("logs/training.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -65,7 +68,9 @@ class ModelTrainer:
             )
             return self.get_default_config()
         except yaml.YAMLError as e:
-            logger.error(f"Error parsing YAML file {self.config_path}: {e}")
+            logger.error(
+                f"Error parsing YAML file {self.config_path}: {e}"
+            )
             logger.warning("Using default configuration")
             return self.get_default_config()
         except Exception as e:
@@ -100,7 +105,9 @@ class ModelTrainer:
         y_train = pd.read_csv(os.path.join(data_dir, "y_train.csv")).iloc[:, 0]
         y_test = pd.read_csv(os.path.join(data_dir, "y_test.csv")).iloc[:, 0]
 
-        logger.info(f"Loaded data - X_train: {X_train.shape}, X_test: {X_test.shape}")
+        logger.info(
+            f"Loaded data - X_train: {X_train.shape}, X_test: {X_test.shape}"
+        )
         return X_train, X_test, y_train, y_test
 
     def create_model(self) -> RandomForestClassifier:
@@ -282,7 +289,9 @@ class ModelTrainer:
             self.save_model()
             self.save_metrics()
 
-            logger.info("Training pipeline with MLflow tracking completed successfully")
+            logger.info(
+                "Training pipeline with MLflow tracking completed successfully"
+            )
             return self.metrics
 
         finally:
@@ -345,8 +354,12 @@ def main():
     print("\nTraining Summary:")
     print(f"Accuracy: {metrics['accuracy']:.4f}")
     print(f"F1-Score: {metrics['f1_score']:.4f}")
-    print(f"Training Time: {metrics['training_time']:.2f} seconds")
-    print(f"Cross-validation Accuracy: {metrics['cv_mean_accuracy']:.4f}")
+    print(
+        f"Training Time: {metrics['training_time']:.2f} seconds"
+    )
+    print(
+        f"Cross-validation Accuracy: {metrics['cv_mean_accuracy']:.4f}"
+    )
 
 
 if __name__ == "__main__":

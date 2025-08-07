@@ -1,12 +1,14 @@
+import os
+import logging
+from typing import Tuple, List, Optional
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.impute import SimpleImputer
 import joblib
-import os
-import logging
-from typing import Tuple, List, Optional
+
 
 # Set up logging with absolute path
 log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
@@ -216,12 +218,15 @@ class DataPreprocessor:
         logger.info(f"Splitting data with test_size={self.test_size}")
 
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=self.test_size, random_state=self.random_state, stratify=y
+            X,
+            y,
+            test_size=self.test_size,
+            random_state=self.random_state,
+            stratify=y,
         )
 
         logger.info(
-            f"Training set shape: {X_train.shape}, "
-            f"Testing set shape: {X_test.shape}"
+            f"Training set shape: {X_train.shape}, Testing set shape: {X_test.shape}"
         )
         return X_train, X_test, y_train, y_test
 
@@ -263,7 +268,7 @@ class DataPreprocessor:
         logger.info("Split datasets and preprocessing artifacts saved successfully")
 
     def preprocess_pipeline(
-        self, df: pd.DataFrame, columns_to_drop: List[str] = None
+        self, df: pd.DataFrame, columns_to_drop: Optional[List[str]] = None
     ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
         """
         Complete preprocessing pipeline.

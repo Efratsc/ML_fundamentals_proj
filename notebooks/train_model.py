@@ -8,12 +8,10 @@ from train import ModelTrainer
 # Add src to the path
 base_dir = os.path.dirname(os.path.abspath(__file__))  # /full/path/to/ml_project
 
-
 os.makedirs(os.path.join(base_dir, "logs"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "results"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "models"), exist_ok=True)
 os.makedirs(os.path.join(base_dir, "mlruns"), exist_ok=True)
-
 
 # Add the src folder to Python path
 sys.path.append(
@@ -46,11 +44,18 @@ def main():
 
     # Print summary
     print("\nTraining completed!")
-    print(f"Model saved to: models/model.pkl")
-    print(f"Metrics saved to: results/metrics.json")
-    print(f"Confusion matrix saved to: results/confusion_matrix.png")
-    print(f"MLflow experiment: domestic_violence_prediction")
-    print(f"MLflow tracking URI: file://{mlruns_path}")
+    print("Model saved to: models/model.pkl")
+    print("Metrics saved to: results/metrics.json")
+    print("Confusion matrix saved to: results/confusion_matrix.png")
+    print("MLflow experiment: domestic_violence_prediction")
+
+    # For long paths, ensure line under 79 chars or split
+    tracking_uri_str = f"MLflow tracking URI: file://{mlruns_path}"
+    if len(tracking_uri_str) > 79:
+        print("MLflow tracking URI:")
+        print(f"file://{mlruns_path}")
+    else:
+        print(tracking_uri_str)
 
 
 if __name__ == "__main__":
