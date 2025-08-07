@@ -1,0 +1,6 @@
+artifact_location: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327
+creation_time: 1754322530740
+experiment_id: '110838992052583327'
+last_update_time: 1754322530740
+lifecycle_stage: active
+name: domestic_violence_prediction

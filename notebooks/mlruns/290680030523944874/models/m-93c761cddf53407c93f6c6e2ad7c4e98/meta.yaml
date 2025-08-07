@@ -1,0 +1,10 @@
+artifact_location: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/notebooks/mlruns/290680030523944874/models/m-93c761cddf53407c93f6c6e2ad7c4e98/artifacts
+creation_timestamp: 1754323644312
+experiment_id: '290680030523944874'
+last_updated_timestamp: 1754323688160
+model_id: m-93c761cddf53407c93f6c6e2ad7c4e98
+model_type: null
+name: random_forest_model
+source_run_id: 4a75fb88ac654245bfa448c30be33434
+status: 2
+status_message: null
