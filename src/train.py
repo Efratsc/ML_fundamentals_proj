@@ -83,9 +83,17 @@ class ModelTrainer:
         return {
             "model": {
                 "type": "RandomForestClassifier",
-                "params": {"n_estimators": 100, "max_depth": 10, "random_state": 42},
+                "params": {
+                    "n_estimators": 100,
+                    "max_depth": 10,
+                    "random_state": 42,
+                },
             },
-            "training": {"test_size": 0.2, "random_state": 42, "cv_folds": 5},
+            "training": {
+                "test_size": 0.2,
+                "random_state": 42,
+                "cv_folds": 5,
+            },
             "paths": {
                 "data_dir": "data/processed/",
                 "model_dir": "models/",
@@ -102,8 +110,12 @@ class ModelTrainer:
 
         X_train = pd.read_csv(os.path.join(data_dir, "X_train.csv"))
         X_test = pd.read_csv(os.path.join(data_dir, "X_test.csv"))
-        y_train = pd.read_csv(os.path.join(data_dir, "y_train.csv")).iloc[:, 0]
-        y_test = pd.read_csv(os.path.join(data_dir, "y_test.csv")).iloc[:, 0]
+        y_train = pd.read_csv(
+            os.path.join(data_dir, "y_train.csv")
+        ).iloc[:, 0]
+        y_test = pd.read_csv(
+            os.path.join(data_dir, "y_test.csv")
+        ).iloc[:, 0]
 
         logger.info(
             f"Loaded data - X_train: {X_train.shape}, X_test: {X_test.shape}"
@@ -128,7 +140,9 @@ class ModelTrainer:
         self.model.fit(X_train, y_train)
         self.training_time = time.time() - start_time
 
-        logger.info(f"Model training completed in {self.training_time:.2f} seconds")
+        logger.info(
+            f"Model training completed in {self.training_time:.2f} seconds"
+        )
 
     def evaluate_model(
         self,
@@ -168,14 +182,20 @@ class ModelTrainer:
         return self.metrics
 
     def cross_validate(
-        self, X_train: pd.DataFrame, y_train: pd.Series
+        self,
+        X_train: pd.DataFrame,
+        y_train: pd.Series,
     ) -> dict:
         """Perform cross-validation."""
         logger.info("Performing cross-validation")
 
         cv_folds = self.config["training"]["cv_folds"]
         cv_scores = cross_val_score(
-            self.model, X_train, y_train, cv=cv_folds, scoring="accuracy"
+            self.model,
+            X_train,
+            y_train,
+            cv=cv_folds,
+            scoring="accuracy",
         )
 
         cv_metrics = {
@@ -194,7 +214,10 @@ class ModelTrainer:
         return cv_metrics
 
     def plot_confusion_matrix(
-        self, X_test: pd.DataFrame, y_test: pd.Series, save_path: str = None
+        self,
+        X_test: pd.DataFrame,
+        y_test: pd.Series,
+        save_path: str = None,
     ) -> None:
         """Plot and save confusion matrix."""
         logger.info("Creating confusion matrix plot")
@@ -281,7 +304,9 @@ class ModelTrainer:
                 self.config["paths"]["metrics_dir"], "feature_importance.png"
             )
             self.mlflow_tracker.log_feature_importance(
-                self.model, X_train.columns, feature_importance_path
+                self.model,
+                X_train.columns,
+                feature_importance_path,
             )
 
             self.mlflow_tracker.register_model()
@@ -333,13 +358,21 @@ def main():
         help="Path to training configuration file",
     )
     parser.add_argument(
-        "--model-path", type=str, default=None, help="Path to save the trained model"
+        "--model-path",
+        type=str,
+        default=None,
+        help="Path to save the trained model",
     )
     parser.add_argument(
-        "--metrics-path", type=str, default=None, help="Path to save training metrics"
+        "--metrics-path",
+        type=str,
+        default=None,
+        help="Path to save training metrics",
     )
     parser.add_argument(
-        "--use-mlflow", action="store_true", help="Use MLflow tracking"
+        "--use-mlflow",
+        action="store_true",
+        help="Use MLflow tracking",
     )
 
     args = parser.parse_args()
@@ -354,12 +387,8 @@ def main():
     print("\nTraining Summary:")
     print(f"Accuracy: {metrics['accuracy']:.4f}")
     print(f"F1-Score: {metrics['f1_score']:.4f}")
-    print(
-        f"Training Time: {metrics['training_time']:.2f} seconds"
-    )
-    print(
-        f"Cross-validation Accuracy: {metrics['cv_mean_accuracy']:.4f}"
-    )
+    print(f"Training Time: {metrics['training_time']:.2f} seconds")
+    print(f"Cross-validation Accuracy: {metrics['cv_mean_accuracy']:.4f}")
 
 
 if __name__ == "__main__":

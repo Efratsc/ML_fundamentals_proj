@@ -11,7 +11,9 @@ import joblib
 
 
 # Set up logging with absolute path
-log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
+log_dir = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "logs"
+)
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "preprocessing.log")
 
@@ -82,9 +84,13 @@ class DataPreprocessor:
             for col in categorical_cols:
                 if df[col].isnull().sum() > 0:
                     df[col] = df[col].fillna(
-                        df[col].mode()[0] if len(df[col].mode()) > 0 else "Unknown"
+                        df[col].mode()[0]
+                        if len(df[col].mode()) > 0
+                        else "Unknown"
                     )
-                    logger.info(f"Imputed missing values in categorical column: {col}")
+                    logger.info(
+                        f"Imputed missing values in categorical column: {col}"
+                    )
 
         null_count = df.isnull().sum().sum()
         logger.info(f"Missing values handled. Remaining nulls: {null_count}")
@@ -262,7 +268,8 @@ class DataPreprocessor:
 
         joblib.dump(self.scaler, os.path.join(artifacts_dir, "scaler.pkl"))
         joblib.dump(
-            self.label_encoders, os.path.join(artifacts_dir, "label_encoders.pkl")
+            self.label_encoders,
+            os.path.join(artifacts_dir, "label_encoders.pkl"),
         )
 
         logger.info("Split datasets and preprocessing artifacts saved successfully")

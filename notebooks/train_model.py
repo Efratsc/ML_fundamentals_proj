@@ -23,7 +23,9 @@ def main():
     print("Starting model training pipeline with MLflow tracking...")
 
     # Set absolute path to config file
-    config_path = os.path.abspath(os.path.join("..", "config", "train_config.yaml"))
+    config_path = os.path.abspath(
+        os.path.join("..", "config", "train_config.yaml")
+    )
     trainer = ModelTrainer(config_path=config_path)
 
     # Update the paths in the config to absolute paths
@@ -40,7 +42,7 @@ def main():
     mlflow.set_experiment("domestic_violence_prediction")
 
     # Run the training pipeline with MLflow tracking
-    metrics = trainer.train_pipeline_with_mlflow()
+    _ = trainer.train_pipeline_with_mlflow()  # assigned to _ to avoid unused variable warning
 
     # Print summary
     print("\nTraining completed!")

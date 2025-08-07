@@ -123,7 +123,9 @@ class MLflowTracker:
         try:
             if self.run is None:
                 raise RuntimeError("No active run to register model from")
-            model_uri = f"runs:/{self.run.info.run_id}/random_forest_model"
+            model_uri = (
+                f"runs:/{self.run.info.run_id}/random_forest_model"
+            )
             mlflow.register_model(model_uri, model_name)
             logger.info(f"Registered model: {model_name}")
         except Exception as e:

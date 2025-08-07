@@ -1,7 +1,7 @@
 from data_loader import load_raw_data
 import sys
 import os
-#import pandas as pd
+# import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -23,8 +23,10 @@ target_column = "target"  # Change this to your actual target column name
 if target_column in df.columns:
     print("\nTarget class distribution:\n", df[target_column].value_counts())
     print(
-        "\nTarget class proportions:\n", df[target_column].value_counts(normalize=True)
+        "\nTarget class proportions:\n",
+        df[target_column].value_counts(normalize=True),
     )
+
 else:
     print("\nPlease set 'target_column' to your actual target column name.")
 
