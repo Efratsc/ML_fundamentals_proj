@@ -22,7 +22,7 @@ jobs:
         run: pip install flake8
 
       - name: Run flake8
-        run: cd ml_project && flake8 .
+        run: flake8 .
 
   test:
     name: Test /predict endpoint
@@ -60,7 +60,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: docker build -t mlops-domestic-abuse-api:latest ./ml_project
+        run: docker build -t mlops-domestic-abuse-api:latest .
 
       # Optional: Push to Docker Hub or GHCR
       # - name: Login to DockerHub
