@@ -28,7 +28,7 @@ iface = gr.Interface(
     inputs=gr.Textbox(lines=3, placeholder="Enter tweet text here..."),
     outputs="text",
     title="Tweet Abuse Detection",
-    description="Enter a tweet and the model predicts if it is abusive or not.",
+    description="Enter tweet to know if it is abusive or not.",
 )
 
 if __name__ == "__main__":
