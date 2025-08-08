@@ -3,7 +3,6 @@ import logging
 from typing import Tuple, List, Optional
 
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import joblib
@@ -50,7 +49,9 @@ class DataPreprocessor:
         logger.info("Cleaned column names")
         return df
 
-    def drop_irrelevant_columns(self, df: pd.DataFrame, columns_to_drop: List[str]) -> pd.DataFrame:
+    def drop_irrelevant_columns(
+        self, df: pd.DataFrame, columns_to_drop: List[str]
+    ) -> pd.DataFrame:
         """
         Drop columns not needed for modeling.
         """
@@ -63,7 +64,9 @@ class DataPreprocessor:
         """
         Label encode the target column.
         """
-        df[self.target_column] = self.label_encoder.fit_transform(df[self.target_column])
+        df[self.target_column] = self.label_encoder.fit_transform(
+            df[self.target_column]
+        )
         logger.info(f"Encoded target column '{self.target_column}'")
         return df
 
@@ -79,7 +82,9 @@ class DataPreprocessor:
         # Features = only the tweet text column (assume column named "tweet")
         X = df["tweet"]
         y = df[self.target_column]
-        logger.info(f"Features and labels split done. Feature shape: {X.shape}, Labels shape: {y.shape}")
+        logger.info(
+            f"Features and labels split done. Feature shape: {X.shape}, Labels shape: {y.shape}"
+        )
         return X, y
 
     def split_data(
@@ -119,7 +124,9 @@ class DataPreprocessor:
         # Save the label encoder to use later for decoding predictions
         artifacts_dir = os.path.join(output_dir, "artifacts")
         os.makedirs(artifacts_dir, exist_ok=True)
-        joblib.dump(self.label_encoder, os.path.join(artifacts_dir, "label_encoder.pkl"))
+        joblib.dump(
+            self.label_encoder, os.path.join(artifacts_dir, "label_encoder.pkl")
+        )
         logger.info(f"Saved label encoder at {artifacts_dir}")
 
         logger.info(f"Saved train/test splits at {output_dir}")

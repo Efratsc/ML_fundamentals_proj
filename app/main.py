@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from typing import List
 from app.serving import MultiModelAPI
 from app.schemas import PredictionRequest  # import the schema from your app folder
 
@@ -8,9 +7,11 @@ app = FastAPI()
 # Initialize the multi-model loader
 model_api = MultiModelAPI(model_dir="models")
 
+
 @app.get("/")
 async def read_root() -> dict:
     return {"message": "Welcome to the Multi-Model ML API"}
+
 
 @app.post("/predict")
 async def predict(request: PredictionRequest) -> dict:

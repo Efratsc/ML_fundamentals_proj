@@ -7,7 +7,10 @@ import joblib
 from scipy import sparse
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 
 def generate_features(input_file: str, output_dir: str):
     logging.info(f"Loading cleaned data from {input_file}")
@@ -43,7 +46,10 @@ def generate_features(input_file: str, output_dir: str):
     logging.info(f"Saved vectorizer to {vectorizer_path}")
     logging.info("Feature engineering complete.")
 
+
 if __name__ == "__main__":
-    input_file = os.path.abspath(os.path.join("..", "data", "processed", "train_combined.csv"))
+    input_file = os.path.abspath(
+        os.path.join("..", "data", "processed", "train_combined.csv")
+    )
     output_dir = os.path.abspath(os.path.join("..", "data", "features"))
     generate_features(input_file, output_dir)

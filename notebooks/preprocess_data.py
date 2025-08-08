@@ -1,17 +1,19 @@
-import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'src'))
-from preprocess import DataPreprocessor
+import sys
+
+sys.path.append(
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "src")
+)
+
 from data_loader import load_raw_data
+from preprocess import DataPreprocessor
 
-
-# Add src to the path
-# sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'src'))
 
 # Create logs directory in the project root
 project_root = os.path.abspath(os.path.join(".."))
 logs_dir = os.path.join(project_root, "logs")
 os.makedirs(logs_dir, exist_ok=True)
+
 
 def main():
     # Load the raw data
@@ -27,13 +29,16 @@ def main():
     df = df[df["class"] != 0]  # You can adjust this as needed
 
     # Define columns to drop (keep only "tweet" and "class")
-    columns_to_drop = ["count", "hate_speech", "offensive_language", "neither"]  # ✅ Drop unneeded columns
+    columns_to_drop = [
+        "count",
+        "hate_speech",
+        "offensive_language",
+        "neither",
+    ]  # ✅ Drop unneeded columns
 
     # Initialize preprocessor
     preprocessor = DataPreprocessor(
-        target_column=target_column,
-        test_size=0.2,
-        random_state=42
+        target_column=target_column, test_size=0.2, random_state=42
     )
 
     # Run the preprocessing pipeline
@@ -53,6 +58,7 @@ def main():
     # Show class distribution
     print(f"\nTarget variable '{target_column}' distribution:")
     print(y_train.value_counts())
+
 
 if __name__ == "__main__":
     main()
