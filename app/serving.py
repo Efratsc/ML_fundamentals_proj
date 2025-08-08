@@ -4,7 +4,8 @@ from fastapi import HTTPException
 from typing import List
 
 class MultiModelAPI:
-    
+
+
     def __init__(self, model_dir: str = "models"):
         self.model_dir = model_dir
         self.models = {}
