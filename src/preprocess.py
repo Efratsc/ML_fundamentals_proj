@@ -8,9 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 import joblib
 
 # Set up logging with absolute path
-log_dir = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)), "logs"
-)
+log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "preprocessing.log")
 
@@ -55,7 +53,9 @@ class DataPreprocessor:
         """
         Drop columns not needed for modeling.
         """
-        existing_cols = [col for col in columns_to_drop if col in df.columns]
+        existing_cols = [
+            col for col in columns_to_drop if col in df.columns
+        ]
         df = df.drop(columns=existing_cols)
         logger.info(f"Dropped columns: {existing_cols}")
         return df
@@ -77,7 +77,9 @@ class DataPreprocessor:
         Split dataset into features (tweet text) and labels.
         """
         if self.target_column not in df.columns:
-            raise ValueError(f"Target column '{self.target_column}' not found in dataframe")
+            raise ValueError(
+                f"Target column '{self.target_column}' not found in dataframe"
+            )
 
         # Features = only the tweet text column (assume column named "tweet")
         X = df["tweet"]
@@ -100,8 +102,12 @@ class DataPreprocessor:
             random_state=self.random_state,
             stratify=y,
         )
-        logger.info(f"Split data into train/test sets with test_size={self.test_size}")
-        logger.info(f"Train size: {X_train.shape}, Test size: {X_test.shape}")
+        logger.info(
+            f"Split data into train/test sets with test_size={self.test_size}"
+        )
+        logger.info(
+            f"Train size: {X_train.shape}, Test size: {X_test.shape}"
+        )
         return X_train, X_test, y_train, y_test
 
     def save_split_datasets(
@@ -116,16 +122,33 @@ class DataPreprocessor:
         Save split datasets to CSV files.
         """
         os.makedirs(output_dir, exist_ok=True)
-        X_train.to_csv(os.path.join(output_dir, "X_train.csv"), index=False, header=True)
-        X_test.to_csv(os.path.join(output_dir, "X_test.csv"), index=False, header=True)
-        y_train.to_csv(os.path.join(output_dir, "y_train.csv"), index=False, header=True)
-        y_test.to_csv(os.path.join(output_dir, "y_test.csv"), index=False, header=True)
+        X_train.to_csv(
+            os.path.join(output_dir, "X_train.csv"),
+            index=False,
+            header=True,
+        )
+        X_test.to_csv(
+            os.path.join(output_dir, "X_test.csv"),
+            index=False,
+            header=True,
+        )
+        y_train.to_csv(
+            os.path.join(output_dir, "y_train.csv"),
+            index=False,
+            header=True,
+        )
+        y_test.to_csv(
+            os.path.join(output_dir, "y_test.csv"),
+            index=False,
+            header=True,
+        )
 
         # Save the label encoder to use later for decoding predictions
         artifacts_dir = os.path.join(output_dir, "artifacts")
         os.makedirs(artifacts_dir, exist_ok=True)
         joblib.dump(
-            self.label_encoder, os.path.join(artifacts_dir, "label_encoder.pkl")
+            self.label_encoder,
+            os.path.join(artifacts_dir, "label_encoder.pkl"),
         )
         logger.info(f"Saved label encoder at {artifacts_dir}")
 

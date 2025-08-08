@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from app.serving import MultiModelAPI
-from app.schemas import PredictionRequest  # import the schema from your app folder
+from app.schemas import (
+    PredictionRequest,
+)  # import the schema from your app folder
 
 app = FastAPI()
 
@@ -16,7 +18,9 @@ async def read_root() -> dict:
 @app.post("/predict")
 async def predict(request: PredictionRequest) -> dict:
     try:
-        prediction = model_api.predict(request.model_name, request.features)
+        prediction = model_api.predict(
+            request.model_name, request.features
+        )
         return {"model": request.model_name, "prediction": prediction}
     except HTTPException as e:
         raise e

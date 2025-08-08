@@ -4,7 +4,9 @@ import os
 
 
 # Load the saved model and vectorizer
-model_path = os.path.join(os.path.dirname(__file__), "..", "models", "model.pkl")
+model_path = os.path.join(
+    os.path.dirname(__file__), "..", "models", "model.pkl"
+)
 vectorizer, model = joblib.load(model_path)
 
 
@@ -26,7 +28,7 @@ iface = gr.Interface(
     inputs=gr.Textbox(lines=3, placeholder="Enter tweet text here..."),
     outputs="text",
     title="Tweet Abuse Detection",
-    description="Enter a tweet and the model predicts if it is abusive or not."
+    description="Enter a tweet and the model predicts if it is abusive or not.",
 )
 
 if __name__ == "__main__":

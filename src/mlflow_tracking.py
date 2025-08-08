@@ -16,7 +16,9 @@ class MLflowTracker:
     Helper class for MLflow experiment tracking.
     """
 
-    def __init__(self, experiment_name: str = "domestic_violence_prediction"):
+    def __init__(
+        self, experiment_name: str = "domestic_violence_prediction"
+    ):
         self.experiment_name = experiment_name
         self.run = None
         self.setup_mlflow()
@@ -33,9 +35,7 @@ class MLflowTracker:
     def start_run(self, run_name: str = None):
         """Start a new MLflow run, ending any active run first."""
         if mlflow.active_run() is not None:
-            logger.warning(
-                "An MLflow run is already active. "
-            )
+            logger.warning("An MLflow run is already active. ")
             mlflow.end_run()
         if run_name is None:
             run_name = f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -52,7 +52,9 @@ class MLflowTracker:
         print(metrics)
         """Log metrics to MLflow, filtering out None values."""
         filtered_metrics = {
-            k: v for k, v in metrics.items() if not isinstance(v, (list, tuple, dict))
+            k: v
+            for k, v in metrics.items()
+            if not isinstance(v, (list, tuple, dict))
         }
         print("Filtered metrics for MLflow:", filtered_metrics)
         mlflow.log_metrics(filtered_metrics)
@@ -79,7 +81,10 @@ class MLflowTracker:
         logger.info(f"Logged confusion matrix: {save_path}")
 
     def log_feature_importance(
-        self, model, feature_names, save_path: str = "feature_importance.png"
+        self,
+        model,
+        feature_names,
+        save_path: str = "feature_importance.png",
     ):
         """Generate, save, and log feature importance plot."""
         if hasattr(model, "feature_importances_"):
@@ -129,9 +134,7 @@ class MLflowTracker:
         try:
             if self.run is None:
                 raise RuntimeError("No active run to register model from")
-            model_uri = (
-                f"runs:/{self.run.info.run_id}/random_forest_model"
-            )
+            model_uri = f"runs:/{self.run.info.run_id}/random_forest_model"
             mlflow.register_model(model_uri, model_name)
             logger.info(f"Registered model: {model_name}")
         except Exception as e:
@@ -139,9 +142,7 @@ class MLflowTracker:
 
     def get_experiment_info(self):
         """Return basic experiment info including total runs."""
-        experiment = mlflow.get_experiment_by_name(
-            self.experiment_name
-        )
+        experiment = mlflow.get_experiment_by_name(self.experiment_name)
         if experiment:
             runs = mlflow.search_runs(
                 experimenmt_ids=[experiment.experiment_id]

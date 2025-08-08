@@ -25,7 +25,7 @@ def main():
     # Define target column
     target_column = "class"  # ✅ The label (0, 1, 2)
 
-    # Optional: Filter only abuse-related labels (1 = offensive, 2 = hate speech)
+    # Optional: Filter only abuse-related labels
     df = df[df["class"] != 0]  # You can adjust this as needed
 
     # Define columns to drop (keep only "tweet" and "class")
