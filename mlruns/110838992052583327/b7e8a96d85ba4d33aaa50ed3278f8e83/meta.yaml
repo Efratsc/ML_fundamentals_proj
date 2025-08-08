@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327/b7e8a96d85ba4d33aaa50ed3278f8e83/artifacts
+end_time: 1754554892829
+entry_point_name: ''
+experiment_id: '110838992052583327'
+lifecycle_stage: active
+run_id: b7e8a96d85ba4d33aaa50ed3278f8e83
+run_name: overjoyed-ant-932
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754554880966
+status: 3
+tags: []
+user_id: efrata

@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/notebooks/mlruns/290680030523944874/c70dd156c2ef44e59844e9029f4c3c9b/artifacts
+end_time: 1754571028529
+entry_point_name: ''
+experiment_id: '290680030523944874'
+lifecycle_stage: active
+run_id: c70dd156c2ef44e59844e9029f4c3c9b
+run_name: run_20250807_155023
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754571025194
+status: 3
+tags: []
+user_id: efrata

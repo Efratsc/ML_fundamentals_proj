@@ -48,8 +48,12 @@ class MLflowTracker:
         logger.info(f"Logged hyperparameters: {params}")
 
     def log_metrics(self, metrics):
+        print("Logging the following metrics to MLflow:")
+        print(metrics)
         """Log metrics to MLflow, filtering out None values."""
-        filtered_metrics = {k: v for k, v in metrics.items() if v is not None}
+        filtered_metrics = {
+            k: v for k, v in metrics.items() if not isinstance(v, (list, tuple, dict))
+        }
         print("Filtered metrics for MLflow:", filtered_metrics)
         mlflow.log_metrics(filtered_metrics)
         logger.info(f"Logged metrics: {filtered_metrics}")

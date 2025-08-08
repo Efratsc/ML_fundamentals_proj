@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327/e88a74726a7d4ac081bdca36a598545e/artifacts
+end_time: 1754554736574
+entry_point_name: ''
+experiment_id: '110838992052583327'
+lifecycle_stage: active
+run_id: e88a74726a7d4ac081bdca36a598545e
+run_name: enchanting-cod-278
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754554725372
+status: 3
+tags: []
+user_id: efrata

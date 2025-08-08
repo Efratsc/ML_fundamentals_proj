@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327/30ba458261dd4f10a48fe4410d754f1c/artifacts
+end_time: 1754553922332
+entry_point_name: ''
+experiment_id: '110838992052583327'
+lifecycle_stage: active
+run_id: 30ba458261dd4f10a48fe4410d754f1c
+run_name: useful-hog-714
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754553906868
+status: 3
+tags: []
+user_id: efrata

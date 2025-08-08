@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327/2568741e838b44dbbd5190349dde72d1/artifacts
+end_time: 1754555440146
+entry_point_name: ''
+experiment_id: '110838992052583327'
+lifecycle_stage: active
+run_id: 2568741e838b44dbbd5190349dde72d1
+run_name: sedate-sow-688
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754555438956
+status: 3
+tags: []
+user_id: efrata

@@ -5,10 +5,8 @@ from typing import Tuple, List, Optional
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder
 import joblib
-
 
 # Set up logging with absolute path
 log_dir = os.path.join(
@@ -27,7 +25,9 @@ logger = logging.getLogger(__name__)
 
 class DataPreprocessor:
     """
-    A comprehensive data preprocessing pipeline for ML projects.
+    Preprocessing pipeline for text classification dataset:
+    Features: tweet text only (no numeric scaling)
+    Target: 'class' label encoded
     """
 
     def __init__(
@@ -36,200 +36,58 @@ class DataPreprocessor:
         test_size: float = 0.2,
         random_state: int = 42,
     ):
-        """
-        Initialize the preprocessor.
-
-        Args:
-            target_column: Name of the target variable
-            test_size: Proportion of data to use for testing
-            random_state: Random seed for reproducibility
-        """
         self.target_column = target_column
         self.test_size = test_size
         self.random_state = random_state
-        self.scaler = StandardScaler()
-        self.label_encoders = {}
-        self.imputer = SimpleImputer(strategy="mean")
+        self.label_encoder = LabelEncoder()
         self.columns_to_drop = []
 
-    def handle_missing_values(
-        self, df: pd.DataFrame, strategy: str = "mean"
-    ) -> pd.DataFrame:
+    def clean_column_names(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Handle missing values in the dataset.
-
-        Args:
-            df: Input DataFrame
-            strategy: Strategy for imputation ('mean', 'median',
-                      'most_frequent', 'constant')
-
-        Returns:
-            DataFrame with missing values handled
+        Strip whitespace from column names.
         """
-        logger.info(f"Handling missing values using {strategy} strategy")
-
-        # Get numerical and categorical columns
-        numerical_cols = df.select_dtypes(include=[np.number]).columns
-        categorical_cols = df.select_dtypes(include=["object"]).columns
-
-        # Handle numerical columns
-        if len(numerical_cols) > 0:
-            if strategy in ["mean", "median"]:
-                imputer = SimpleImputer(strategy=strategy)
-                df[numerical_cols] = imputer.fit_transform(df[numerical_cols])
-                logger.info(
-                    f"Imputed {len(numerical_cols)} numerical columns "
-                    f"using {strategy} strategy"
-                )
-
-        # Handle categorical columns
-        if len(categorical_cols) > 0:
-            for col in categorical_cols:
-                if df[col].isnull().sum() > 0:
-                    df[col] = df[col].fillna(
-                        df[col].mode()[0]
-                        if len(df[col].mode()) > 0
-                        else "Unknown"
-                    )
-                    logger.info(
-                        f"Imputed missing values in categorical column: {col}"
-                    )
-
-        null_count = df.isnull().sum().sum()
-        logger.info(f"Missing values handled. Remaining nulls: {null_count}")
+        df.columns = df.columns.str.strip()
+        logger.info("Cleaned column names")
         return df
 
-    def encode_categorical_features(
-        self, df: pd.DataFrame, columns: Optional[List[str]] = None
-    ) -> pd.DataFrame:
+    def drop_irrelevant_columns(self, df: pd.DataFrame, columns_to_drop: List[str]) -> pd.DataFrame:
         """
-        Encode categorical features using Label Encoding.
-
-        Args:
-            df: Input DataFrame
-            columns: List of categorical columns to encode. If None,
-                     encodes all object columns.
-
-        Returns:
-            DataFrame with encoded categorical features
+        Drop columns not needed for modeling.
         """
-        logger.info("Encoding categorical features")
+        existing_cols = [col for col in columns_to_drop if col in df.columns]
+        df = df.drop(columns=existing_cols)
+        logger.info(f"Dropped columns: {existing_cols}")
+        return df
 
-        if columns is None:
-            columns = df.select_dtypes(include=["object"]).columns.tolist()
-
-        df_encoded = df.copy()
-
-        for col in columns:
-            if col in df.columns and col != self.target_column:
-                le = LabelEncoder()
-                df_encoded[col] = le.fit_transform(df_encoded[col].astype(str))
-                self.label_encoders[col] = le
-                logger.info(f"Encoded categorical column: {col}")
-
-        logger.info(f"Encoded {len(columns)} categorical features")
-        return df_encoded
-
-    def normalize_numerical_features(
-        self, df: pd.DataFrame, columns: Optional[List[str]] = None
-    ) -> pd.DataFrame:
+    def encode_target(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Normalize numerical features using StandardScaler.
-
-        Args:
-            df: Input DataFrame
-            columns: List of numerical columns to normalize. If None,
-                     normalizes all numerical columns.
-
-        Returns:
-            DataFrame with normalized numerical features
+        Label encode the target column.
         """
-        logger.info("Normalizing numerical features")
-
-        if columns is None:
-            columns = df.select_dtypes(include=[np.number]).columns.tolist()
-            # Remove target column from normalization
-            if self.target_column in columns:
-                columns.remove(self.target_column)
-
-        df_normalized = df.copy()
-
-        if len(columns) > 0:
-            df_normalized[columns] = self.scaler.fit_transform(
-                df_normalized[columns]
-            )
-            logger.info(f"Normalized {len(columns)} numerical features")
-
-        return df_normalized
-
-    def drop_irrelevant_columns(
-        self, df: pd.DataFrame, columns_to_drop: List[str]
-    ) -> pd.DataFrame:
-        """
-        Drop irrelevant columns from the dataset.
-
-        Args:
-            df: Input DataFrame
-            columns_to_drop: List of column names to drop
-
-        Returns:
-            DataFrame with irrelevant columns removed
-        """
-        logger.info(f"Dropping {len(columns_to_drop)} irrelevant columns")
-
-        # Only drop columns that exist in the DataFrame
-        existing_columns = [
-            col for col in columns_to_drop if col in df.columns
-        ]
-        df_cleaned = df.drop(columns=existing_columns)
-
-        self.columns_to_drop = existing_columns
-        logger.info(f"Dropped columns: {existing_columns}")
-
-        return df_cleaned
+        df[self.target_column] = self.label_encoder.fit_transform(df[self.target_column])
+        logger.info(f"Encoded target column '{self.target_column}'")
+        return df
 
     def create_features_labels_split(
         self, df: pd.DataFrame
-    ) -> Tuple[pd.DataFrame, pd.Series]:
+    ) -> Tuple[pd.Series, pd.Series]:
         """
-        Split data into features (X) and labels (y).
-
-        Args:
-            df: Input DataFrame
-
-        Returns:
-            Tuple of (features, labels)
+        Split dataset into features (tweet text) and labels.
         """
-        logger.info("Creating features and labels split")
-
         if self.target_column not in df.columns:
-            msg = (
-                f"Target column '{self.target_column}' "
-                "not found in DataFrame"
-            )
-            raise ValueError(msg)
+            raise ValueError(f"Target column '{self.target_column}' not found in dataframe")
 
-        X = df.drop(columns=[self.target_column])
+        # Features = only the tweet text column (assume column named "tweet")
+        X = df["tweet"]
         y = df[self.target_column]
-
-        logger.info(f"Features shape: {X.shape}, Labels shape: {y.shape}")
+        logger.info(f"Features and labels split done. Feature shape: {X.shape}, Labels shape: {y.shape}")
         return X, y
 
     def split_data(
-        self, X: pd.DataFrame, y: pd.Series
-    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+        self, X: pd.Series, y: pd.Series
+    ) -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
         """
-        Split data into training and testing sets.
-
-        Args:
-            X: Features DataFrame
-            y: Labels Series
-
-        Returns:
-            Tuple of (X_train, X_test, y_train, y_test)
+        Split into train and test sets.
         """
-        logger.info(f"Splitting data with test_size={self.test_size}")
-
         X_train, X_test, y_train, y_test = train_test_split(
             X,
             y,
@@ -237,84 +95,54 @@ class DataPreprocessor:
             random_state=self.random_state,
             stratify=y,
         )
-
-        logger.info(
-            f"Training set shape: {X_train.shape}, "
-            f"Testing set shape: {X_test.shape}"
-        )
+        logger.info(f"Split data into train/test sets with test_size={self.test_size}")
+        logger.info(f"Train size: {X_train.shape}, Test size: {X_test.shape}")
         return X_train, X_test, y_train, y_test
 
     def save_split_datasets(
         self,
-        X_train: pd.DataFrame,
-        X_test: pd.DataFrame,
+        X_train: pd.Series,
+        X_test: pd.Series,
         y_train: pd.Series,
         y_test: pd.Series,
         output_dir: str = "../data/processed/",
     ) -> None:
         """
-        Save split datasets to disk.
-
-        Args:
-            X_train, X_test, y_train, y_test: Split datasets
-            output_dir: Directory to save the datasets
+        Save split datasets to CSV files.
         """
-        logger.info(f"Saving split datasets to {output_dir}")
-
-        # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
+        X_train.to_csv(os.path.join(output_dir, "X_train.csv"), index=False, header=True)
+        X_test.to_csv(os.path.join(output_dir, "X_test.csv"), index=False, header=True)
+        y_train.to_csv(os.path.join(output_dir, "y_train.csv"), index=False, header=True)
+        y_test.to_csv(os.path.join(output_dir, "y_test.csv"), index=False, header=True)
 
-        # Save datasets
-        X_train.to_csv(os.path.join(output_dir, "X_train.csv"), index=False)
-        X_test.to_csv(os.path.join(output_dir, "X_test.csv"), index=False)
-        y_train.to_csv(os.path.join(output_dir, "y_train.csv"), index=False)
-        y_test.to_csv(os.path.join(output_dir, "y_test.csv"), index=False)
-
-        # Save preprocessing artifacts
+        # Save the label encoder to use later for decoding predictions
         artifacts_dir = os.path.join(output_dir, "artifacts")
         os.makedirs(artifacts_dir, exist_ok=True)
+        joblib.dump(self.label_encoder, os.path.join(artifacts_dir, "label_encoder.pkl"))
+        logger.info(f"Saved label encoder at {artifacts_dir}")
 
-        joblib.dump(self.scaler, os.path.join(artifacts_dir, "scaler.pkl"))
-        joblib.dump(
-            self.label_encoders,
-            os.path.join(artifacts_dir, "label_encoders.pkl"),
-        )
-
-        logger.info("Split datasets saved successfully")
+        logger.info(f"Saved train/test splits at {output_dir}")
 
     def preprocess_pipeline(
         self, df: pd.DataFrame, columns_to_drop: Optional[List[str]] = None
-    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    ) -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
         """
-        Complete preprocessing pipeline.
-
-        Args:
-            df: Input DataFrame
-            columns_to_drop: List of columns to drop
-
-        Returns:
-            Tuple of (X_train, X_test, y_train, y_test)
+        Run full preprocessing pipeline.
         """
         logger.info("Starting preprocessing pipeline")
 
-        # Step 1: Handle missing values
-        df = self.handle_missing_values(df)
+        df = self.clean_column_names(df)
 
-        # Step 2: Drop irrelevant columns
         if columns_to_drop:
             df = self.drop_irrelevant_columns(df, columns_to_drop)
 
-        # Step 3: Encode categorical features
-        df = self.encode_categorical_features(df)
+        df = self.encode_target(df)
 
-        # Step 4: Normalize numerical features
-        df = self.normalize_numerical_features(df)
-
-        # Step 5: Create features and labels split
         X, y = self.create_features_labels_split(df)
 
-        # Step 6: Split data
         X_train, X_test, y_train, y_test = self.split_data(X, y)
 
         logger.info("Preprocessing pipeline completed successfully")
+
         return X_train, X_test, y_train, y_test

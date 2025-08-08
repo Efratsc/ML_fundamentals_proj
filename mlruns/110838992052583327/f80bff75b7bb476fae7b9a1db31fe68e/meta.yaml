@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327/f80bff75b7bb476fae7b9a1db31fe68e/artifacts
+end_time: 1754554345817
+entry_point_name: ''
+experiment_id: '110838992052583327'
+lifecycle_stage: active
+run_id: f80bff75b7bb476fae7b9a1db31fe68e
+run_name: funny-shoat-88
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754554261753
+status: 3
+tags: []
+user_id: efrata

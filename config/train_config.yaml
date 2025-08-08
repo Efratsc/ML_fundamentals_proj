@@ -13,7 +13,7 @@
     cv_folds: 5
 
   paths:
-    data_dir: data/processed/
+    data_dir: data/processed
     model_dir: models/
     metrics_dir: results/
     logs_dir: logs/

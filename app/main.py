@@ -1,29 +1,19 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from typing import List
-
 from app.serving import MultiModelAPI
+from app.schemas import PredictionRequest  # import the schema from your app folder
 
 app = FastAPI()
 
 # Initialize the multi-model loader
 model_api = MultiModelAPI(model_dir="models")
 
-# Define input data schema
-
-
-class PredictionRequest(BaseModel):
-    model_name: str
-    features: List[float]
-
-
 @app.get("/")
-def read_root():
+async def read_root() -> dict:
     return {"message": "Welcome to the Multi-Model ML API"}
 
-
 @app.post("/predict")
-def predict(request: PredictionRequest):
+async def predict(request: PredictionRequest) -> dict:
     try:
         prediction = model_api.predict(request.model_name, request.features)
         return {"model": request.model_name, "prediction": prediction}

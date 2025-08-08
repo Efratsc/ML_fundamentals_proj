@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Users/tsedey/Documents/starter_mlops_project/ml_project/mlruns/110838992052583327/bdb9fb5d80354bb3b62391ebfe53f34d/artifacts
+end_time: 1754555579011
+entry_point_name: ''
+experiment_id: '110838992052583327'
+lifecycle_stage: active
+run_id: bdb9fb5d80354bb3b62391ebfe53f34d
+run_name: zealous-ant-598
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754555570506
+status: 3
+tags: []
+user_id: efrata
